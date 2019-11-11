@@ -38,4 +38,12 @@ internal class CommandParserTest{
                 entry("Chris", Driver("Chris"))
         )
     }
+
+    @Test
+    fun `parser will ignore unknown commands and not explode`(){
+        val commandFile = resourceLoader.getResource("classpath:command_file").file
+        val driverMap = commandParser.createDriverMap(commandFile)
+
+        assertThat(driverMap).isEmpty()
+    }
 }
