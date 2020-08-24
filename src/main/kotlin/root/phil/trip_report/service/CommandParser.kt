@@ -5,6 +5,7 @@ import root.phil.trip_report.model.Driver
 import root.phil.trip_report.model.Trip
 import java.io.File
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit.MINUTES
 
 @Service
 class CommandParser {
@@ -17,9 +18,17 @@ class CommandParser {
         val (drivers, trips) = commandLines.partition { line -> line.startsWith("Driver") }
         val driversMap = drivers.map { Driver(it.split(" ").last()) }.associateBy { it.driverName }
         trips.filter { it.startsWith("Trip") }.map { tripString ->
-            val split = tripString.split(" ")
-            val newTrip = Trip(LocalTime.parse(split[2]), LocalTime.parse(split[3]), split[4].toBigDecimal())
-            driversMap[split[1]]?.trips?.add(newTrip)
+            tripString.split(" ")
+                    .let { (_, driverName, startTime, endTime, milesDriven) ->
+                        val minutesBetween = MINUTES.between(LocalTime.parse(startTime), LocalTime.parse(endTime))
+                        val mph = milesDriven.toFloat() / minutesBetween.toFloat() * 60
+                        mph.takeIf { it >= 5 && it < 100}?.let {
+                            Trip(LocalTime.parse(startTime), LocalTime.parse(endTime), milesDriven.toBigDecimal())
+                        }?.run {
+                            driversMap[driverName]?.trips?.add(this)
+                        }
+                    }
+
         }
         return driversMap
     }

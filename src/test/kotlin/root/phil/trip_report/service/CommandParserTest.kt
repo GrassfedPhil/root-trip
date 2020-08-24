@@ -67,4 +67,34 @@ internal class CommandParserTest{
         assertThat(chris?.trips).isEmpty()
 
     }
+
+    @Test
+    fun `parser will not add trips that have an avg speed of less than 5mph`(){
+        val driverMap = commandParser.createDriverMap(listOf(
+                "Driver Dave",
+                "Trip Dave 11:11 12:34 55.6",
+                "Trip Dave 13:00 14:00 4.9",
+                "Trip Dave 14:00 15:00 5"
+        ))
+
+        assertThat(driverMap["Dave"]?.trips).usingFieldByFieldElementComparator().containsOnly(
+                Trip(LocalTime.parse("11:11"), LocalTime.parse("12:34"), 55.6.toBigDecimal()),
+                Trip(LocalTime.parse("14:00"), LocalTime.parse("15:00"), 5.toBigDecimal())
+        )
+    }
+
+    @Test
+    fun `parser will not add trips that have an avg speed of greater than or equal 60mph`(){
+        val driverMap = commandParser.createDriverMap(listOf(
+                "Driver Dave",
+                "Trip Dave 11:11 12:34 55.6",
+                "Trip Dave 14:00 15:01 100",
+                "Trip Dave 15:00 15:59 100"
+        ))
+
+        assertThat(driverMap["Dave"]?.trips).usingFieldByFieldElementComparator().containsOnly(
+                Trip(LocalTime.parse("11:11"), LocalTime.parse("12:34"), 55.6.toBigDecimal()),
+                Trip(LocalTime.parse("14:00"), LocalTime.parse("15:01"), 100.toBigDecimal())
+        )
+    }
 }
