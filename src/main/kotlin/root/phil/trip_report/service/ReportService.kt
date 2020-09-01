@@ -2,6 +2,7 @@ package root.phil.trip_report.service
 
 import org.springframework.stereotype.Service
 import root.phil.trip_report.model.Driver
+import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 @Service
@@ -10,7 +11,9 @@ class ReportService {
 
         return driverMap.map {(driverName, driver) ->
             val distance = driver.trips.sumBy { it.distance.roundToInt() }
-            "$driverName: $distance miles"
+            val totalTime = driver.trips.sumBy { ChronoUnit.MINUTES.between(it.startTime, it.endTime).toInt() }
+            val mph = distance.toDouble() / totalTime.toDouble() * 60
+            "$driverName: $distance miles @ ${mph.roundToInt()} mph"
         }
     }
 }

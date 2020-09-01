@@ -18,9 +18,9 @@ internal class ReportServiceTest {
 
     @Test
     fun `generateReport will consolidate trips by driver`(){
-        val daveTrip1 = Trip(LocalTime.now().minusMinutes(5), LocalTime.now(), 50.0, 50.0)
-        val daveTrip2 = Trip(LocalTime.now().minusMinutes(5), LocalTime.now(), 50.0, 50.0)
-        val chrisTrip = Trip(LocalTime.now().minusMinutes(5), LocalTime.now(), 50.0, 50.0)
+        val daveTrip1 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 100.0, 50.0)
+        val daveTrip2 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 50.0, 50.0)
+        val chrisTrip = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 50.0, 50.0)
         val dave = Driver("Dave")
         dave.trips.addAll(listOf(daveTrip1, daveTrip2))
         val chris = Driver("Chris")
@@ -29,6 +29,6 @@ internal class ReportServiceTest {
         val trips = mapOf("Dave" to dave, "Chris" to chris)
 
         val report = reportService.generateReport(trips)
-        assertThat(report).containsExactly("Dave: 100 miles", "Chris: 50 miles")
+        assertThat(report).containsExactly("Dave: 150 miles @ 75 mph", "Chris: 50 miles @ 50 mph")
     }
 }
