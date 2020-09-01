@@ -14,7 +14,7 @@ import java.time.LocalTime
 import java.util.function.BiPredicate
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest
+@SpringBootTest(classes = [TripService::class])
 internal class TripServiceTest {
 
     @Autowired

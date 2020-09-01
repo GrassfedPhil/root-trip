@@ -9,7 +9,7 @@ import org.springframework.core.io.ResourceLoader
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest
+@SpringBootTest(classes = [CommandParser::class])
 internal class CommandParserTest {
     @Autowired
     lateinit var resourceLoader: ResourceLoader

@@ -11,7 +11,7 @@ import root.phil.trip_report.model.Trip
 import java.time.LocalTime
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest
+@SpringBootTest(classes = [ReportService::class])
 internal class ReportServiceTest {
     @Autowired
     lateinit var reportService: ReportService
