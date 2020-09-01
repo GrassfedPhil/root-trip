@@ -31,4 +31,16 @@ internal class ReportServiceTest {
         val report = reportService.generateReport(trips)
         assertThat(report).containsExactly("Dave: 150 miles @ 75 mph", "Chris: 50 miles @ 50 mph")
     }
+
+    @Test
+    fun `generateReport will not attempt to calculate mph when distance traveled is 0`(){
+        val daveTrip1 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 0.0, 0.0)
+        val daveTrip2 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 0.0, 0.0)
+        val dave = Driver("Dave")
+        dave.trips.addAll(listOf(daveTrip1, daveTrip2))
+        val trips = mapOf("Dave" to dave)
+
+        val report = reportService.generateReport(trips)
+        assertThat(report).containsExactly("Dave: 0 miles")
+    }
 }
