@@ -21,9 +21,9 @@ class CommandParser {
             tripString.split(" ")
                     .let { (_, driverName, startTime, endTime, milesDriven) ->
                         val minutesBetween = MINUTES.between(LocalTime.parse(startTime), LocalTime.parse(endTime))
-                        val mph = milesDriven.toFloat() / minutesBetween.toFloat() * 60
+                        val mph = milesDriven.toDouble() / minutesBetween.toDouble() * 60
                         mph.takeIf { it >= 5 && it < 100}?.let {
-                            Trip(LocalTime.parse(startTime), LocalTime.parse(endTime), milesDriven.toBigDecimal())
+                            Trip(LocalTime.parse(startTime), LocalTime.parse(endTime), milesDriven.toDouble(), mph)
                         }?.run {
                             driversMap[driverName]?.trips?.add(this)
                         }
