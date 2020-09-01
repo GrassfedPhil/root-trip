@@ -43,4 +43,21 @@ internal class ReportServiceTest {
         val report = reportService.generateReport(trips)
         assertThat(report).containsExactly("Dave: 0 miles")
     }
+
+    @Test
+    fun `generateReport will sort by distance travelled descending`() {
+        val daveTrip1 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 100.0, 50.0)
+        val daveTrip2 = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 50.0, 50.0)
+        val chrisTrip = Trip(LocalTime.now().minusHours(1), LocalTime.now(), 250.0, 250.0)
+        val dave = Driver("Dave")
+        dave.trips.addAll(listOf(daveTrip1, daveTrip2))
+        val chris = Driver("Chris")
+        chris.trips.add(chrisTrip)
+
+        val trips = mapOf("Dave" to dave, "Chris" to chris)
+
+        val report = reportService.generateReport(trips)
+        assertThat(report).containsExactly("Chris: 250 miles @ 250 mph", "Dave: 150 miles @ 75 mph")
+
+    }
 }
